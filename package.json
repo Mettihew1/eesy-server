@@ -1,0 +1,25 @@
+{
+  "name": "s",
+  "version": "1.0.0",
+  "description": "it's a mongodb server for eesy website backend",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.3",
+    "nodemailer": "^7.0.5",
+    "nodemon": "^3.1.10"
+  }
+}
