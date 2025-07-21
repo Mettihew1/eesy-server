@@ -5,6 +5,22 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
 const router = express.Router();
+ 
+// routes/auth.js
+router.get('/check', (req, res) => {
+  const token = req.cookies.token; // Get token from HTTP-only cookie
+  
+  if (!token) {
+    return res.status(401).json({ authenticated: false });
+  }
+
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ authenticated: true });
+  } catch (err) {
+    res.status(401).json({ authenticated: false });
+  }
+});
 
 // Email configuration
 const transporter = nodemailer.createTransport({
@@ -96,12 +112,6 @@ router.post('/login', async (req, res) => {
       email: email.toLowerCase().trim() 
     }).select('+password');
 
-    // Add this debug log in your login route
-console.log('Searching for:', email.toLowerCase().trim());
-console.log('User found:', user ? user.email : 'None');
-console.log("All Users in database", await User.find());
-
-    
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -116,11 +126,6 @@ console.log("All Users in database", await User.find());
     user.lastLogin = new Date();
     await user.save();
 
-      console.log('Comparing passwords...');
-  console.log('Input length:', password.length);
-  console.log('Stored hash:', user.password.substring(0, 10) + '...');
-  console.log('Match result:', isMatch);
-
     // Create JWT token
     const token = jwt.sign({ 
       id: user._id,
@@ -129,13 +134,14 @@ console.log("All Users in database", await User.find());
       expiresIn: process.env.JWT_EXPIRES_IN || '1h' 
     });
 
-    // Set HTTP-only cookie
     res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: parseInt(process.env.JWT_COOKIE_EXPIRES) || 3600000
-    }).json({ 
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax', // Changed from 'strict'
+  maxAge: parseInt(process.env.JWT_COOKIE_EXPIRES) || 3600000,
+  domain: process.env.COOKIE_DOMAIN || 'localhost', // Add this
+  path: '/', // Ensure this is set
+}).json({ 
       message: 'Login successful', 
       user: sanitizeUser(user)
     });

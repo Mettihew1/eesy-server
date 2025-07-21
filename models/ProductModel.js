@@ -46,6 +46,7 @@ const productSchema = new mongoose.Schema({
   specifications: { 
     type: Object 
   },
+  featured: { type: Boolean, default: false },
   images:{
     type: Array
   },

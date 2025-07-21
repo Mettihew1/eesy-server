@@ -7,8 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
-
-
+import adminRoutes from "./routes/adminRoutes.js";
 
 // Config
 env.config();
@@ -20,13 +19,13 @@ app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+// Change CORS to this:
 app.use(cors({
-  origin: 'http://localhost:5173', // Replace with your frontend URL
-  credentials: true, // Allow cookies/auth headers
+  // origin: 'http://localhost:5173', // Your exact frontend URL
+  origin: 'https://www.eesy.ir',
+  credentials: true,
+  exposedHeaders: ['set-cookie'] // Add this line
 }));
-
-
 
 
 
@@ -46,6 +45,11 @@ app.use("/auth", authRoutes);
 app.use("/products", productRoutes);
 app.use("/search", searchRoutes);
 app.use("/cart", cartRoutes);
+app.use("/admin", adminRoutes);
+
+
+
+
 
 // Just Check
 app.get("/", (req, res) => {
@@ -57,7 +61,6 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "healthy" });
 });
 
-// Database Connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
@@ -65,6 +68,7 @@ mongoose
     console.error("❌ MongoDB connection failed:", err);
     process.exit(1); // Exit if DB connection fails
   });
+
 
 // Error Handling Middleware (Should be last)
 app.use((err, req, res, next) => {

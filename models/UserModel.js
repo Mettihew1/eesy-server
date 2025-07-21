@@ -28,10 +28,15 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user'
   },
+    cart: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
+  }],
   isVerified: {
     type: Boolean,
     default: false
   },
+
   resetToken: String,
   resetTokenExpiry: Date,
   lastLogin: Date,

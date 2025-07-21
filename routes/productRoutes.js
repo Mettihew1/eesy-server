@@ -3,6 +3,15 @@ import Product from '../models/ProductModel.js';
 
 const router = express.Router();
 
+router.get('/featured', async (req, res) => {
+  try {
+    const featuredProduct = await Product.find({ featured: true }).limit(2).exec();
+    res.json(featuredProduct || null);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // Add sample products
 router.get("/add", async (req, res) => {
   try {
