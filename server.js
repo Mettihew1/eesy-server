@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Change CORS to this:
 app.use(cors({
-  // origin: 'http://localhost:5173', // Your exact frontend URL
+   origin: 'http://localhost:5173', // Your exact frontend URL
   origin: 'https://www.eesy.ir',
   credentials: true,
   exposedHeaders: ['set-cookie'] // Add this line
